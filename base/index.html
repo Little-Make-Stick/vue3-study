@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@3"></script>
+    <title>创建一个vue3页面</title>
+</head>
+
+<body>
+
+
+    <div id="app">
+        {{ message }}
+        <p v-text="message"></p>
+        <p v-html="message"></p>
+        <p v-bind="attrs">hello world</p>
+        <!-- 在这个示例中，在支持不需要特别前缀的浏览器中都会渲染为 display: flex。 -->
+        <div :style="{ display: ['-webkit-box', '-ms-flexbox', 'flex'] }"></div>
+        <!-- 仅当按下 Ctrl 且未按任何其他键时才会触发 -->
+        <button @click.ctrl.exact="onCtrlClick">A</button>
+        <!-- true-value 和 false-value 是 Vue 特有的 attributes，仅支持和 v-model 配套使用 -->
+        <input type="checkbox" v-model="toggle" :true-value="dynamicTrueValue" :false-value="dynamicFalseValue" />
+        <!-- 值修饰符 -->
+        <!-- .lazy 改为在每次 change 事件后更新数据 -->
+        <input v-model.lazy="msg" />
+        <!-- .number 用户输入自动转换为数字 -->
+        <input v-model.number="age" />
+        <!-- .trim 默认自动去除用户输入内容中两端的空格 -->
+        <input v-model.trim="msg" />
+    </div>
+
+    <script>
+        const { createApp } = Vue
+
+        createApp({
+            data() {
+                return {
+                    message: 'Hello Vue!',
+                    attrs: {
+                        id: 'id1',
+                        class: 'class1'
+                    }
+                }
+            },
+            watch: {
+                attrs: {
+                    handler(newV) {
+                        console.log(newV)
+                    }, 
+                    // 如果想侦听所有嵌套的变更，你需要深层侦听器
+                    deep: true,
+                    // 强制立即执行回调
+                    immediate: true,
+                    // 在侦听器回调中能访问被 Vue 更新之后的DOM
+                    flush: 'post'
+                }
+            },
+            methods: {
+                onCtrlClick() {
+                    console.log('仅按下 Ctrl ')
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+
+</html>

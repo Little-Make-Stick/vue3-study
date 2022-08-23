@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@3"></script>
+    <title>自定义修饰符</title>
+</head>
+
+<body>
+<!-- https://cn.vuejs.org/guide/components/events.html#usage-with-v-model -->
+
+    <div id="app">
+        <!-- 自定义的修饰符 capitalize，它会自动将 v-model 绑定输入的字符串值第一个字母转为大写 -->
+        <my-component v-model.capitalize="myText" />
+    </div>
+
+    <!-- <script type="x-template" id="my-component">
+        <template>
+            <input type="text" :value="modelValue"
+                @input="$emit('update:modelValue', $event.target.value)"
+            />
+        </template>
+    </script> -->
+
+    <script>
+        // Vue.component('myComponent', {
+        //     template: '#my-component',
+        //     props: {
+        //         modelValue: String,
+        //         modelModifiers: {
+        //             default: () => ({})
+        //         }
+        //     },
+        //     emits: ['update:modelValue'],
+        //     created() {
+        //         console.log(this.modelModifiers) // { capitalize: true }
+        //     },
+        //     methods:{
+        //         emitValue(e) {
+        //             let value = e.target.value
+        //             if (this.modelModifiers.capitalize) {
+        //                   value = value.charAt(0).toUpperCase() + value.slice(1)
+        //             }
+        //             this.$emit('update:modelValue', value)
+        //         }
+        //     }
+        // })
+
+        const myComponent = {
+            template: `<input type="text" :value="modelValue" @input="emitValue" />`,
+            props: {
+                modelValue: String,
+                modelModifiers: {
+                    default: () => ({})
+                }
+            },
+            emits: ['update:modelValue'],
+            created() {
+                console.log(this.modelModifiers) // { capitalize: true }
+            },
+            methods:{
+                emitValue(e) {
+                    let value = e.target.value
+                    if (this.modelModifiers.capitalize) {
+                          value = value.charAt(0).toUpperCase() + value.slice(1)
+                          console.log(value)
+                    }
+                    this.$emit('update:modelValue', value)
+                }
+            }
+        }
+
+        const { createApp } = Vue
+
+        createApp({
+            components: {
+                myComponent,
+            },
+            data() {
+                return {
+                    myText: ''
+                }
+            },
+            watch: {},
+            methods: {}
+        }).mount('#app')
+    </script>
+</body>
+
+</html>
