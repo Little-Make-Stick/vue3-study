@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computed</title>
+    <!-- vue3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <input type="text" v-model="firstName">
+        <input type="text" v-model="lastName">
+        <p>{{ fullName }}</p>
+        <button @click="fullName = 'first last'">change</button>
+    </div>
+
+    <script>
+        const { createApp } = Vue
+        const { ref, computed } = Vue
+
+        createApp({
+            setup() {
+                const firstName = ref('John')
+                const lastName = ref('white')
+                // const fullName = computed(() => {
+                //     return firstName.value + ' ' + lastName.value
+                // })
+                const fullName = computed({
+                    get() {
+                        return firstName.value + ' ' + lastName.value
+                    },
+                    set(value) {
+                        [firstName.value, lastName.value] = value.split(' ')
+                    }
+                })
+                return {
+                    firstName,
+                    lastName,
+                    fullName
+                }
+            },
+            data() {
+                return {
+                    message: 'Hello Vue!',
+                }
+            }
+        }).mount('#app')
+    </script>
+
+</body>
+
+</html>
