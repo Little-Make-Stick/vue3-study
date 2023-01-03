@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WatchEffect</title>
+    <!-- vue3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <input type="text" v-model="message.name">
+        <input type="number" v-model="message.age">
+        <p>{{ message }}</p>
+        <button @click="()=>watchId()">stop Msg Watch</button>
+    </div>
+
+    <script>
+        const { createApp } = Vue
+        const { ref, watchEffect } = Vue
+
+        createApp({
+            setup() {
+                const message = ref({
+                    name: 'xiao yao',
+                    age: 18
+                })
+                let timerId = ref(0);
+                // 可用于 监听页面请求的筛选参数，只要有一个参数改变就调用请求
+                // watchEffect(source) 接收一个函数，函数有个参数类型为函数(下面例子的 onCleanup)，
+                // onCleanup这个参数可以接收一个函数，函数里面所有的操作都会执行在 source 前面，可以用于配置防抖，处理监听数据等操作
+                
+                // watchEffect 返回一个函数，执行这个函数可以关闭当前监听器，可以在 beforeDestory 释放监听
+                const watchId = watchEffect((onCleanup) => {
+                    onCleanup(() => {
+                        // 对data进行处理
+                        // 设置定时器防抖
+                        if (timerId.value) clearTimeout(timerId.value)
+                        timerId.value = 0
+                    })
+                    // 注意：调用监听的变量需要在 source 函数里的语句，不能在 source 里面的内部函数使用，否则无法实现监听
+                    // 这里 调用的message 如果挪到 setTimout 里面则无法完成监听
+                    let data = {
+                        name: message.value.name,
+                        age: message.value.age
+                    }
+                    timerId.value = setTimeout(() => {
+                        console.log('变更后', data);
+                    }, 1000)
+                }, {
+                    // flush: 'pre',       // 组件更新前执行
+                    // flush: 'sync',      // 强制效果始终同步触发
+                    // flush: 'post',      // 组件更新后执行
+                    onTrack(debuggerEvent) {
+                        console.log('track', debuggerEvent);
+                    },     // get
+                    onTrigger(debuggerEvent) {
+                        console.log('trigger', debuggerEvent);
+                    },     // set，可以拿到 newValue 和 oldValue
+                })
+                return {
+                    watchId,
+                    message,
+                }
+            },
+            data() {
+                return {}
+            }
+        }).mount('#app')
+    </script>
+</body>
+
+</html>
