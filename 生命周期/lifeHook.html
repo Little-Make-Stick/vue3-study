@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生命周期</title>
+    <!-- vue3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 使用 keepAlive，里面的组件切换显示时，只有第一次显示需要执行 setup，mounted 等钩子，之后都是执行 activated -->
+        <!-- 隐藏内部某个组件时，调用 deactivated 而不是 unmounted -->
+        <Keep-alive>
+            <comp-a v-if="flag"></comp-a>
+            <comp-b v-else></comp-b>
+        </Keep-alive>
+        <button @click="handlerToggle">toggle</button>
+    </div>
+
+    <script>
+        const { createApp } = Vue
+        const { onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onActivated, onDeactivated, onBeforeUnmount, onUnmounted, onErrorCaptured, onRenderTracked, onRenderTriggered } = Vue
+
+        createApp({
+            components: {
+                CompA: {
+                    template: `<div class="comp-a"> <p>component A</p> </div>`,
+                    setup() {
+                        console.log('%c[compA组件 组合式 API]=====> setup', 'color: #7895ec');
+
+                        onBeforeMount(() => {
+                            console.log('%c[compA组件 组合式 API]=====> onBeforeMount', 'color: #7895ec');
+                        })
+                        onMounted(() => {
+                            console.log('%c[compA组件 组合式 API]=====> onMounted', 'color: #7895ec');
+                        })
+                        onBeforeUpdate(() => {
+                            console.log('%c[compA组件 组合式 API]=====> onBeforeUpdate', 'color: #7895ec');
+                        })
+                        onUpdated(() => {
+                            console.log('%c[compA组件 组合式 API]=====> onUpdated', 'color: #7895ec');
+                        })
+                        onActivated(() => {
+                            console.log('%c[compA组件 组合式 API]=====> onActivated', 'color: #7895ec');
+                        })
+                        onDeactivated(() => {
+                            console.log('%c[compA组件 组合式 API]=====> onDeactivated', 'color: #7895ec');
+                        })
+                        onBeforeUnmount(() => {
+                            console.log('%c[compA组件 组合式 API]=====> onBeforeUnmount', 'color: #7895ec');
+                        })
+                        onUnmounted(() => {
+                            console.log('%c[compA组件 组合式 API]=====> onUnmounted', 'color: #7895ec');
+                        })
+                        onErrorCaptured((error, instance, info) => {
+                            console.log('%c[compA组件 组合式 API]=====> onErrorCaptured', 'color: #7895ec');
+                        })
+                        onRenderTracked((buggerEvent) => {
+                            console.log('%c[compA组件 组合式 API]=====> onRenderTracked', 'color: #7895ec');
+                        })
+                        onRenderTriggered((buggerEvent) => {
+                            console.log('%c[compA组件 组合式 API]=====> onRenderTriggered', 'color: #7895ec');
+                        })
+                        return {}
+                    },
+                    data() {
+                        return {}
+                    },
+                    // 在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用
+                    beforeCreate() {
+                        console.log('%c[compA组件 选项 API ]=====> beforeCreate', 'color: #7895ec');
+                    },
+                    // 在实例创建完成后被立即调用，然而，挂载阶段还没开始，
+                    created() {
+                        console.log('%c[compA组件 选项 API ]=====> created', 'color: #7895ec');
+                    },
+                    // 在挂载开始之前被调用：相关的 render 函数首次被调用
+                    beforeMount() {
+                        console.log('%c[compA组件 选项 API ]=====> beforeMount', 'color: #7895ec');
+                    },
+                    // 实例被挂载后调用，注意 mounted 不会保证所有的子组件也都一起被挂载。如果你希望等到整个视图都渲染完毕，可以在 mounted 内部使用 vm.$nextTick
+                    mounted() {
+                        console.log('%c[compA组件 选项 API ]=====> mounted', 'color: #7895ec');
+                    },
+                    // 数据更新时调用，发生在虚拟 DOM 打补丁之前
+                    beforeUpdate() {
+                        console.log('%c[compA组件 选项 API ]=====> beforeUpdate', 'color: #7895ec');
+                    },
+                    // 当这个钩子被调用时，组件 DOM 已经更新，所以你现在可以执行依赖于 DOM 的操作
+                    // 注意，updated 不会保证所有的子组件也都一起被重绘。如果你希望等到整个视图都重绘完毕，可以在 updated 里使用 vm.$nextTick
+                    updated() {
+                        console.log('%c[compA组件 选项 API ]=====> updated', 'color: #7895ec');
+                    },
+                    // 被 keep-alive 缓存的组件激活时调用
+                    activated() {
+                        console.log('%c[compA组件 选项 API ]=====> activated', 'color: #7895ec');
+                    },
+                    // 被 keep-alive 缓存的组件停用时调用
+                    deactivated() {
+                        console.log('%c[compA组件 选项 API ]=====> deactivated', 'color: #7895ec');
+                    },
+                    // 在卸载组件实例之前调用。在这个阶段，实例仍然是完全正常的。
+                    beforeUnmount() {
+                        console.log('%c[compA组件 选项 API ]=====> beforeUnmount', 'color: #7895ec');
+                    },
+                    // 卸载组件实例后调用。调用此钩子时，组件实例的所有指令都被解除绑定，所有事件侦听器都被移除，所有子组件实例被卸载。
+                    unmounted() {
+                        console.log('%c[compA组件 选项 API ]=====> unmounted', 'color: #7895ec');
+                    },
+                    // 当捕获一个来自子孙组件的错误时被调用。此钩子会收到三个参数：错误对象、发生错误的组件实例以及一个包含错误来源信息的字符串。
+                    errorCaptured(error, instance, info) {
+                        console.log('%c[compA组件 选项 API ]=====> errorCaptured', 'color: #7895ec');
+                    },
+                    // 此事件告诉你哪个操作跟踪了组件以及该操作的目标对象和键。
+                    renderTracked(buggerEvent) {
+                        console.log('%c[compA组件 选项 API ]=====> renderTracked', 'color: #7895ec');
+                    },
+                    // 此事件告诉你是什么操作触发了重新渲染，以及该操作的目标对象和键。
+                    renderTriggered(buggerEvent) {
+                        console.log('%c[compA组件 选项 API ]=====> renderTriggered', 'color: #7895ec');
+                    }
+                },
+                CompB: {
+                    template: `<div class="comp-b"> <p>component B</p> </div>`,
+                    setup() {
+                        console.log('%c[compB组件 组合式 API]=====> setup', 'color: #7aa275');
+
+                        onBeforeMount(() => {
+                            console.log('%c[compB组件 组合式 API]=====> onBeforeMount', 'color: #7aa275');
+                        })
+                        onMounted(() => {
+                            console.log('%c[compB组件 组合式 API]=====> onMounted', 'color: #7aa275');
+                        })
+                        onBeforeUpdate(() => {
+                            console.log('%c[compB组件 组合式 API]=====> onBeforeUpdate', 'color: #7aa275');
+                        })
+                        onUpdated(() => {
+                            console.log('%c[compB组件 组合式 API]=====> onUpdated', 'color: #7aa275');
+                        })
+                        onActivated(() => {
+                            console.log('%c[compB组件 组合式 API]=====> onActivated', 'color: #7aa275');
+                        })
+                        onDeactivated(() => {
+                            console.log('%c[compB组件 组合式 API]=====> onDeactivated', 'color: #7aa275');
+                        })
+                        onBeforeUnmount(() => {
+                            console.log('%c[compB组件 组合式 API]=====> onBeforeUnmount', 'color: #7aa275');
+                        })
+                        onUnmounted(() => {
+                            console.log('%c[compB组件 组合式 API]=====> onUnmounted', 'color: #7aa275');
+                        })
+                        onErrorCaptured((error, instance, info) => {
+                            console.log('%c[compB组件 组合式 API]=====> onErrorCaptured', 'color: #7aa275');
+                        })
+                        onRenderTracked((buggerEvent) => {
+                            console.log('%c[compB组件 组合式 API]=====> onRenderTracked', 'color: #7aa275');
+                        })
+                        onRenderTriggered((buggerEvent) => {
+                            console.log('%c[compB组件 组合式 API]=====> onRenderTriggered', 'color: #7aa275');
+                        })
+                        return {}
+                    },
+                    data() {
+                        return {}
+                    },
+                    // 在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用
+                    beforeCreate() {
+                        console.log('%c[compB组件 选项 API ]=====> beforeCreate', 'color: #7aa275');
+                    },
+                    // 在实例创建完成后被立即调用，然而，挂载阶段还没开始，
+                    created() {
+                        console.log('%c[compB组件 选项 API ]=====> created', 'color: #7aa275');
+                    },
+                    // 在挂载开始之前被调用：相关的 render 函数首次被调用
+                    beforeMount() {
+                        console.log('%c[compB组件 选项 API ]=====> beforeMount', 'color: #7aa275');
+                    },
+                    // 实例被挂载后调用，注意 mounted 不会保证所有的子组件也都一起被挂载。如果你希望等到整个视图都渲染完毕，可以在 mounted 内部使用 vm.$nextTick
+                    mounted() {
+                        console.log('%c[compB组件 选项 API ]=====> mounted', 'color: #7aa275');
+                    },
+                    // 数据更新时调用，发生在虚拟 DOM 打补丁之前
+                    beforeUpdate() {
+                        console.log('%c[compB组件 选项 API ]=====> beforeUpdate', 'color: #7aa275');
+                    },
+                    // 当这个钩子被调用时，组件 DOM 已经更新，所以你现在可以执行依赖于 DOM 的操作
+                    // 注意，updated 不会保证所有的子组件也都一起被重绘。如果你希望等到整个视图都重绘完毕，可以在 updated 里使用 vm.$nextTick
+                    updated() {
+                        console.log('%c[compB组件 选项 API ]=====> updated', 'color: #7aa275');
+                    },
+                    // 被 keep-alive 缓存的组件激活时调用
+                    activated() {
+                        console.log('%c[compB组件 选项 API ]=====> activated', 'color: #7aa275');
+                    },
+                    // 被 keep-alive 缓存的组件停用时调用
+                    deactivated() {
+                        console.log('%c[compB组件 选项 API ]=====> deactivated', 'color: #7aa275');
+                    },
+                    // 在卸载组件实例之前调用。在这个阶段，实例仍然是完全正常的。
+                    beforeUnmount() {
+                        console.log('%c[compB组件 选项 API ]=====> beforeUnmount', 'color: #7aa275');
+                    },
+                    // 卸载组件实例后调用。调用此钩子时，组件实例的所有指令都被解除绑定，所有事件侦听器都被移除，所有子组件实例被卸载。
+                    unmounted() {
+                        console.log('%c[compB组件 选项 API ]=====> unmounted', 'color: #7aa275');
+                    },
+                    // 当捕获一个来自子孙组件的错误时被调用。此钩子会收到三个参数：错误对象、发生错误的组件实例以及一个包含错误来源信息的字符串。
+                    errorCaptured(error, instance, info) {
+                        console.log('%c[compB组件 选项 API ]=====> errorCaptured', 'color: #7aa275');
+                    },
+                    // 此事件告诉你哪个操作跟踪了组件以及该操作的目标对象和键。
+                    renderTracked(buggerEvent) {
+                        console.log('%c[compB组件 选项 API ]=====> renderTracked', 'color: #7aa275');
+                    },
+                    // 此事件告诉你是什么操作触发了重新渲染，以及该操作的目标对象和键。
+                    renderTriggered(buggerEvent) {
+                        console.log('%c[compB组件 选项 API ]=====> renderTriggered', 'color: #7aa275');
+                    }
+                },
+            },
+            setup() {
+                // 相当于 选项 API 的 beforeCreate 和 created
+                console.log('[父组件 组合式 API]=====> setup');
+
+                onBeforeMount(() => {
+                    console.log('[父组件 组合式 API]=====> onBeforeMount');
+                })
+                onMounted(() => {
+                    console.log('[父组件 组合式 API]=====> onMounted');
+                })
+                onBeforeUpdate(() => {
+                    console.log('[父组件 组合式 API]=====> onBeforeUpdate');
+                })
+                onUpdated(() => {
+                    console.log('[父组件 组合式 API]=====> onUpdated');
+                })
+                onActivated(() => {
+                    console.log('[父组件 组合式 API]=====> onActivated');
+                })
+                onDeactivated(() => {
+                    console.log('[父组件 组合式 API]=====> onDeactivated');
+                })
+                onBeforeUnmount(() => {
+                    console.log('[父组件 组合式 API]=====> onBeforeUnmount');
+                })
+                onUnmounted(() => {
+                    console.log('[父组件 组合式 API]=====> onUnmounted');
+                })
+                onErrorCaptured((error, instance, info) => {
+                    console.log('[父组件 组合式 API]=====> onErrorCaptured');
+                })
+                // 在 beforeMount 之后执行，注册一个调试钩子，当组件渲染过程中追踪到响应式依赖时调用
+                onRenderTracked((buggerEvent) => {
+                    console.log('[父组件 组合式 API]=====> onRenderTracked');
+                })
+                // 在 beforeUpdate 之前执行，注册一个调试钩子，当响应式依赖的变更触发了组件渲染时调用
+                onRenderTriggered((buggerEvent) => {
+                    console.log('[父组件 组合式 API]=====> onRenderTriggered');
+                })
+                return {}
+            },
+            data() {
+                return {
+                    flag: true
+                }
+            },
+            methods: {
+                handlerToggle() {
+                    this.flag = !this.flag
+                }
+            },
+            // 在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用
+            beforeCreate() {
+                console.log('[父组件 选项 API ]=====> beforeCreate');
+            },
+            // 在实例创建完成后被立即调用，然而，挂载阶段还没开始，
+            created() {
+                console.log('[父组件 选项 API ]=====> created');
+            },
+            // 在挂载开始之前被调用：相关的 render 函数首次被调用
+            beforeMount() {
+                console.log('[父组件 选项 API ]=====> beforeMount');
+            },
+            // 实例被挂载后调用，注意 mounted 不会保证所有的子组件也都一起被挂载。如果你希望等到整个视图都渲染完毕，可以在 mounted 内部使用 vm.$nextTick
+            mounted() {
+                console.log('[父组件 选项 API ]=====> mounted');
+            },
+            // 数据更新时调用，发生在虚拟 DOM 打补丁之前
+            beforeUpdate() {
+                console.log('[父组件 选项 API ]=====> beforeUpdate');
+            },
+            // 当这个钩子被调用时，组件 DOM 已经更新，所以你现在可以执行依赖于 DOM 的操作
+            // 注意，updated 不会保证所有的子组件也都一起被重绘。如果你希望等到整个视图都重绘完毕，可以在 updated 里使用 vm.$nextTick
+            updated() {
+                console.log('[父组件 选项 API ]=====> updated');
+            },
+            // 被 keep-alive 缓存的组件激活时调用
+            activated() {
+                console.log('[父组件 选项 API ]=====> activated');
+            },
+            // 被 keep-alive 缓存的组件停用时调用
+            deactivated() {
+                console.log('[父组件 选项 API ]=====> deactivated');
+            },
+            // 在卸载组件实例之前调用。在这个阶段，实例仍然是完全正常的。
+            beforeUnmount() {
+                console.log('[父组件 选项 API ]=====> beforeUnmount');
+            },
+            // 卸载组件实例后调用。调用此钩子时，组件实例的所有指令都被解除绑定，所有事件侦听器都被移除，所有子组件实例被卸载。
+            unmounted() {
+                console.log('[父组件 选项 API ]=====> unmounted');
+            },
+            // 当捕获一个来自子孙组件的错误时被调用。此钩子会收到三个参数：错误对象、发生错误的组件实例以及一个包含错误来源信息的字符串。
+            errorCaptured(error, instance, info) {
+                console.log('[父组件 选项 API ]=====> errorCaptured');
+            },
+            // 此事件告诉你哪个操作跟踪了组件以及该操作的目标对象和键。
+            renderTracked(buggerEvent) {
+                console.log('[父组件 选项 API ]=====> renderTracked');
+            },
+            // 此事件告诉你是什么操作触发了重新渲染，以及该操作的目标对象和键。
+            renderTriggered(buggerEvent) {
+                console.log('[父组件 选项 API ]=====> renderTriggered');
+            }
+        }).mount('#app')
+    </script>
+</body>
+
+</html>
