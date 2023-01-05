@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>组件传参</title>
+    <!-- vue3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <comp-a ref="myCompA" title="标题aaa" @custom-event="receiveMsg"></comp-a>
+        <button @click="readList">读取compA暴露的属性list</button>
+    </div>
+
+    <script>
+        const { createApp } = Vue
+        const { ref, reactive } = Vue
+
+        createApp({
+            components: {
+                CompA: {
+                    template: `<div class="comp-a">
+                                    <p>{{ title }}</p>
+                                    <p>{{ list }}</p>
+                                    <button @click="sendToParent">给父组件传参</button>
+                                </div>`,
+                    props: {
+                        title: String
+                    },
+                    setup(props, context) {
+                        // const props = defineProps({
+                        //     title: {
+                        //         type: String,
+                        //         default: '标题'
+                        //     }
+                        // })
+                        // defineProps 无需引入，用于接收父组件的参数
+                        // 必须赋给一个变量再通过变量属性访问
+                        // 父组件传过来的参数是只读的
+
+                        // const props = defineProps<{
+                        //     title: string
+                        // }>()
+
+                        // withDefaults 无需引入，是ts特有的设置默认值的方式
+
+                        // const props = withDefaults(defineProps < {
+                        //     title: string
+                        // } > (), {
+                        //     title: "标题"
+                        // })
+
+                        console.log(props);
+                        // 透传 Attributes（非响应式的对象，等价于 $attrs）
+                        console.log(context.attrs)
+                        // 插槽（非响应式的对象，等价于 $slots）
+                        console.log(context.slots)
+                        // 触发事件（函数，等价于 $emit）
+                        console.log(context.emit)
+                        // 暴露公共属性（函数）
+                        console.log(context.expose)
+
+                        // defineEmits无需引入，注册父组件的事件 
+                        // const emit = defineEmits(['customEvent'])
+                        const sendToParent = () => {
+                            // 执行父组件传过来的方法并把参数传过去
+                            // emit('customEvent', '我是子组件的消息')
+                            context.emit('customEvent', '我是子组件的消息')
+                        }
+                        // defineExpose无需引入，暴露自身属性，并且可以被修改
+                        const list = reactive([2, 4, 6])
+                        // defineExpose({
+                        //     list,
+                        // })
+                        context.expose({list})
+
+                        return {
+                            list,
+                            sendToParent
+                        }
+                    }
+                }
+            },
+            setup(props, context) {
+                const receiveMsg = (msg) => {
+                    console.log('收到子组件的参数', msg);
+                }
+                const myCompA = ref();
+                
+                const readList = () => {
+                    console.log('读取compA暴露的属性list', myCompA.value.list);
+                    myCompA.value.list.push(6)
+                }
+                return {
+                    receiveMsg,
+                    readList,
+                    myCompA,
+                }
+            },
+            data() {
+                return {}
+            }
+        }).mount('#app')
+    </script>
+</body>
+
+</html>
