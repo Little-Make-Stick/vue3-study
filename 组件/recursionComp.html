@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>递归组件</title>
+    <!-- vue3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        .tree-item {
+            padding-left: 2em;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <Tree :tree="tree"></Tree>
+    </div>
+
+    <script>
+        const { createApp } = Vue
+        const { ref, reactive } = Vue
+
+        createApp({
+            components: {
+                tree: {
+                    // Vue3 组合式API可以直接根据文件名使用该组件
+                    // .stop阻止子级的click事件向上冒泡
+                    template: `<div class="tree-item" v-for="item in tree" :key="item.label" @click.stop="clickItem(item)">
+                                    <input type="checkbox" v-model="item.checked">{{ item.label }}
+                                    <Tree v-if="item.children?.length" :tree="item.children"></Tree>
+                                </div>`,
+                    // vue3组合式API 如果需要自定义组件名可以通过添加 选项式API写法
+                    name: 'Tree',
+                    props: { tree: Object, },
+                    methods: {
+                        clickItem(item) {
+                            console.log('click', item.label);
+                        }
+                    }
+                }
+            },
+            setup() {
+                const tree = reactive([
+                    {
+                        label: '选项1',
+                        checked: false,
+                        children: [
+                            {
+                                label: '选项1-1',
+                                checked: false,
+                            }
+                        ],
+                    },
+                    {
+                        label: '选项2',
+                        checked: false,
+                    },
+                    {
+                        label: '选项3',
+                        checked: true,
+                        children: [
+                            {
+                                label: '选项3-1',
+                                checked: false,
+                                children: [
+                                    {
+                                        label: '选项3-1-1',
+                                        checked: false,
+                                    }
+                                ],
+                            },
+                            {
+                                label: '选项3-2',
+                                checked: false,
+                            },
+                        ],
+                    },
+                ])
+                return { tree }
+            },
+            data() {
+                return {}
+            }
+        }).mount('#app')
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动态组件</title>
+    <!-- vue2 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <!-- vue3 -->
+    <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
+</head>
+
+<body>
+    <div id="app">
+        <button @click="switchComp('A')">CompA</button>
+        <button @click="switchComp('B')">CompB</button>
+        <!-- 不管是vue2还是vue3，都可以通过给`<component>`的is属性传 `组件名` 或者 `组件对象`,如果传的是组件对象，记得浅层性监听以免浪费性能 -->
+        <component :is="componentId"></component>
+    </div>
+
+    <script>
+        const { createApp } = Vue
+        const { ref, reactive, markRaw } = Vue
+
+        const CompA = {
+            template: `<p>Component A</p>`,
+            name: 'CompA',
+        }
+        const CompB = {
+            template: `<p>Component B</p>`,
+            name: 'CompB'
+        }
+
+        new Vue({
+            el: '#app',
+            components: {
+                CompA,
+                CompB
+            },
+            data() {
+                return {
+                    componentId: CompA
+                }
+            },
+            methods: {
+                switchComp(comp) {
+                    this.componentId = comp == 'A' ? CompA : CompB
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

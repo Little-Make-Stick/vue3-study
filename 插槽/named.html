@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>具名插槽</title>
+    <!-- vue3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <comp-a>
+            <!-- 实例化具名插槽可以通过 v-slot:desc 或者 #desc -->
+            <template v-slot:desc>
+                <p>匿名插槽的内容</p>
+            </template>
+            <!-- <template #desc>
+                <p>匿名插槽的内容</p>
+            </template> -->
+        </comp-a>
+    </div>
+
+    <script>
+        Vue.createApp({
+            components: {
+                CompA: {
+                    // 当为`<slot>`的name属性提供值，此时插槽为具名插槽
+                    template: `<div class="comp-a"><p>Component A</p><slot name="desc"></slot></div>`,
+                    name: 'CompA',
+                }
+            },
+        }).mount('#app')
+    </script>
+</body>
+
+</html>

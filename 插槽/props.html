@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>具名插槽</title>
+    <!-- vue3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <comp-a :mime="mime">
+            <!-- 实例化插槽，接收参数对象 props，可以直接解构取得某个参数 -->
+            <!-- 语法： v-slot:插槽名="参数对象"，可以简写成 #插槽名="参数对象" -->
+            <template v-slot:hobbies="{hobbies}">
+                <ul>
+                    <li v-for="item in hobbies" :key="item">{{ item }}</li>
+                </ul>
+            </template>
+        </comp-a>
+    </div>
+
+    <script>
+        Vue.createApp({
+            components: {
+                CompA: {
+                    // 当为`<slot>`的name属性提供值，此时插槽为具名插槽
+                    // 可以通过 `v-bind:参数名="参数值"`传参,也可以简写成`:参数名="参数值"`
+                    template:   `<div class="comp-a">
+                                    <p>{{ mime.name }}</p>
+                                    <p>{{ mime.age }}</p>
+                                    <slot name="hobbies" :hobbies="mime.hobbies">
+                                        <p>{{ mime.hobbies }}
+                                    </slot>
+                                </div>`,
+                    name: 'CompA',
+                    props: {
+                        mime: Object
+                    }
+                }
+            },
+            data() {
+                return {
+                    mime: {
+                        name: 'John',
+                        age: 18,
+                        hobbies: ['run', 'jump']
+,                    }
+                }
+            },
+        }).mount('#app')
+    </script>
+</body>
+
+</html>

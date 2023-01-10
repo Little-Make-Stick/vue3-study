@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动态插槽</title>
+    <!-- vue3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <comp-a :mime="mime">
+            <!-- 实例化插槽，接收参数对象 props，可以直接解构取得某个参数 -->
+            <!-- 语法： v-slot:插槽名="参数对象"，可以简写成 #插槽名="参数对象" -->
+            <!-- 这里通过[变量名]替换具体插槽名称实现动态插槽，可用于框架模块变换位置 -->
+            <template v-slot:[dynamic]="slotProps">
+                <ol>
+                    <li v-for="(value, key) in slotProps" :key="key">{{ key }}-{{ value }}</li>
+                </ol>
+            </template>
+        </comp-a>
+        <button @click="dynamic = dynamic == 'age' ? 'hobbies' : 'age'">switchSlot</button>
+    </div>
+
+    <script>
+        Vue.createApp({
+            components: {
+                CompA: {
+                    // 当为`<slot>`的name属性提供值，此时插槽为具名插槽
+                    // 可以通过 `v-bind:参数名="参数值"`传参,也可以简写成`:参数名="参数值"`
+                    template: `<div class="comp-a">
+                                    <p>{{ mime.name }}</p>
+                                    <slot name="age" :age="mime.age"></slot>
+                                    <slot name="hobbies" :hobbies="mime.hobbies"></slot>
+                                </div>`,
+                    name: 'CompA',
+                    props: {
+                        mime: Object
+                    }
+                }
+            },
+            data() {
+                return {
+                    mime: {
+                        name: 'John',
+                        age: 18,
+                        hobbies: ['run', 'jump'],
+                    },
+                    dynamic: 'age',
+                }
+            },
+        }).mount('#app')
+    </script>
+</body>
+
+</html>

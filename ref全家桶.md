@@ -168,7 +168,7 @@ ref声明
 
 * [拓展] ref 和 shallowRef 的区别？
     1. 从响应看，ref 生成的响应可以监听到 变量的属性变化，shallowRef 只能监听到自身 `.value` 的变化
-    2. 从源码看，shallowRef创建时返回的是 value ，ref返回的是 toRef(value)
+    2. 从源码看，shallowRef创建时返回的是 value ，ref返回的是 toRef()
 
 * [拓展] ref 和 shallowRef 不能一起写
     如果 ref 和 shallowRef 的变量在一个作用区间一起改变值，那么 shallowRef 会被影响，造成视图的更新
